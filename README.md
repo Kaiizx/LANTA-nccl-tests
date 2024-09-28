@@ -1,4 +1,4 @@
-# NCCL Tests
+# NCCL Tests for LANTA
 
 These tests check both the performance and the correctness of [NCCL](http://github.com/nvidia/nccl) operations.
 
@@ -6,16 +6,14 @@ These tests check both the performance and the correctness of [NCCL](http://gith
 
 To build the tests, just type `make`.
 
-If CUDA is not installed in /usr/local/cuda, you may specify CUDA\_HOME. Similarly, if NCCL is not installed in /usr, you may specify NCCL\_HOME.
-
-```shell
-$ make CUDA_HOME=/path/to/cuda NCCL_HOME=/path/to/nccl
-```
-
 NCCL tests rely on MPI to work on multiple processes, hence multiple nodes. If you want to compile the tests with MPI support, you need to set MPI=1 and set MPI\_HOME to the path where MPI is installed.
 
 ```shell
-$ make MPI=1 MPI_HOME=/path/to/mpi CUDA_HOME=/path/to/cuda NCCL_HOME=/path/to/nccl
+module load PrgEnv-gnu
+module load cpe-cuda/23.03
+module load cudatoolkit/23.3_11.8
+
+make MPI=1 MPI_HOME=/opt/cray/pe/mpich/8.1.25/ofi/gnu/9.1 NCCL_HOME=/opt/nvidia/hpc_sdk/Linux_x86_64/23.3/comm_libs/11.8/nccl
 ```
 
 ## Usage
@@ -24,15 +22,8 @@ NCCL tests can run on multiple processes, multiple threads, and multiple CUDA de
 
 ### Quick examples
 
-Run on single node with 8 GPUs (`-g 8`), scanning from 8 Bytes to 128MBytes :
 ```shell
-$ ./build/all_reduce_perf -b 8 -e 128M -f 2 -g 8
-```
-
-Run 64 MPI processes on nodes with 8 GPUs each, for a total of 64 GPUs spread across 8 nodes :
-(NB: The nccl-tests binaries must be compiled with `MPI=1` for this case)
-```shell
-$ mpirun -np 64 -N 8 ./build/all_reduce_perf -b 8 -e 8G -f 2 -g 1
+sbatch submit.sh
 ```
 
 ### Performance
